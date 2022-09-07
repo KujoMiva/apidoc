@@ -126,7 +126,13 @@ function sendSampleRequest (group, name, version, method) {
 
   // assign the headers
   requestParams.headers = parameters.header;
-
+  
+  // If the body is empty, some nodejs servers will throw (nodejs. Error: multipart: boundary not found).
+  // The default 'Content-Type' should be 'application/json'
+  if (method === 'post' && Object.keys(parameters.body).length === 0) {
+    requestParams.headers['Content-Type'] = 'application/json';
+  }
+  
   if (requestParams.headers['Content-Type'] === 'application/json') {
     // TODO check json is valid?
     // or maybe have a direct feedback on the textarea onkeypress for valid/invalid json
